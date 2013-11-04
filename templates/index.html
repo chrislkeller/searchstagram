@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block main_content %}
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="jumbotron">
+                <div id="content-header"></div>
+                <form id="submission-form"></form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="content-background"></div>
+        <div id="content-display"></div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div id="results-container">
+                <div class="progress progress-striped active hidden">
+                    <div class="progress-bar"  role="progressbar" aria-valuenow="100" style="width: 100%"></div>
+                </div>
+
+                <!--
+                <div id="display-toggle"></div>
+                <div id="content-map-canvas"></div>
+                -->
+
+                <div id="data-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script id="content-header-template" type="text/template">
+        <h1>Searchstagram</h1>
+        <p>A quick way to search Instagram photos near you.</p>
+        <h2>Search Instagram photos by <a class="addressSearch" href="javascript:void(0)">address</a> or <a class="findMe" href="javascript:void(0)">your location</a></h2>
+    </script>
+
+    <script id="address-form-template" type="text/template">
+        <form id="submission-form" class="form-vertical" role="form">
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <input type="text" class="form-control" id="addressSearch" placeholder="Enter an address">
+            </div>
+            <div class="hidden form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <input type="text" class="form-control" name="lat" id="latitudeSearch">
+            </div>
+            <div class="hidden form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <input type="text" class="form-control" name="lng" id="longitudeSearch">
+            </div>
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <label for="countSearch">Number of images to show</label>
+                <input type="number" class="form-control" name="count" id="countSearch" value="12"placeholder="Number of images">
+            </div>
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <button type="button"class="btn btn-success btn-group btn-group-justified" id="submit">Submit</a>
+            </div>
+        </form>
+    </script>
+
+    <script id="location-form-template" type="text/template">
+        <form id="submission-form" class="form-vertical" role="form">
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <input type="text" class="form-control" name="lat" id="latitudeSearch">
+            </div>
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <input type="text" class="form-control" name="lng" id="longitudeSearch">
+            </div>
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <label for="countSearch">Number of images to show</label>
+                <input type="number" class="form-control" name="count" id="countSearch" value="12"placeholder="Number of images">
+            </div>
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <button type="button" class="btn btn-success btn-group btn-group-justified" id="submit">Submit</a>
+            </div>
+        </form>
+    </script>
+
+    <script id="data-results-template" type="text/template">
+        <h3><a href="http://instagram.com/<%= user %>" target="_blank"><%= user %><br/>(<%= user_full_name %>)</a></h3>
+        <img src="<%= image_source %>" class="responsive" />
+        <p><%= caption %></p>
+        <p><%= latitude %>, <%= longitude %></p>
+        <p><%= time_date %></p>
+    </script>
+
+    <script id="display-toggle-template" type="text/template">
+        <a id="list-view" class="btn btn-primary active" href="javascript:void(0)">List View</a>
+        <a id="map-view" class="btn btn-primary" href="javascript:void(0)">Map View</a>
+    </script>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="/static/scripts/app.js"></script>
+{% endblock %}
