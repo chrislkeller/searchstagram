@@ -9,7 +9,7 @@ Riffing of the [QIS tool](https://github.com/propublica/qis) from [ProPublica](h
 
 * Download the zip or clone the repo locally
 
-* Install the requirements from ```requirements.txt```
+* Install the requirements from ```requirements.txt``` into a virtual enviroment, or just straight into the system environment if you prefer.
 
         pip install -r requirements.txt
 
@@ -21,3 +21,7 @@ Riffing of the [QIS tool](https://github.com/propublica/qis) from [ProPublica](h
             'INSTAGRAM_CLIENT_ID': '#',
             'INSTAGRAM_CLIENT_SECRET': '#',
         }
+
+* Change into the searchstagram directory, run ```python app.py``` and visit ```http://127.0.0.1:5000/``` in your browswer.
+
+* Type in an address to search, or use your current location.
