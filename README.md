@@ -1,7 +1,7 @@
 searchstagram
 =============
 
-Riffing of the [QIS tool](https://github.com/propublica/qis) from [ProPublica](http://www.propublica.org/nerds/item/a-super-simple-tool-to-search-instagram-by-time-and-location), searchstagram is a quick Flask/backbone.js application to search Instagram's API by a user's location or a submitted address.
+Riffing of the [QIS tool](https://github.com/propublica/qis) from [Al Shaw](https://twitter.com/A_L) and [ProPublica](http://www.propublica.org/nerds/item/a-super-simple-tool-to-search-instagram-by-time-and-location), searchstagram is a quick Flask/backbone.js application to search Instagram's API by a user's location or a submitted address.
 
 ![ScreenShot](https://raw.github.com/chrislkeller/searchstagram/master/static/images/screenshot.png)
 
