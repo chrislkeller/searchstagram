@@ -270,7 +270,7 @@
                 popupAnchor: [-3, -76]
             });
 
-            var html =
+            this.htmlContent =
                 "<h3><a href='http://instagram.com/" + this.model.attributes.user + "target='_blank'>" + this.model.attributes.user +
                 "<br/>(" + this.model.attributes.user_full_name + ")</a></h3>" +
                 "<img src='" + this.model.attributes.image_source + "' width='100px' class='responsive' />" +
@@ -279,7 +279,7 @@
                 "<p>" + this.model.attributes.time_date + "</p>";
 
             this.map = options.map;
-            this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-instagram-logo.png'})}).bindPopup(html);
+            this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-instagram-logo.png'})}).bindPopup(this.htmlContent);
         },
 
         render: function() {
@@ -287,9 +287,15 @@
             this.marker.on('click', this.onClick);
         },
 
-        onClick: function() {
+        onClick: function(htmlContent) {
+            var infoWindowContent = htmlContent.target._popup._content;
             $('#content-background').css({'opacity' : '0.7'}).fadeIn('fast');
-            $('#content-display').html('<p style=\"float: right\" id=\"close\"><strong>[X]</strong></p>').fadeIn('slow');
+            $('#content-display').html('<p style=\"float: right\" id=\"close\"><strong>[X]</strong></p>' + infoWindowContent).fadeIn('slow');
+
+            $('#close').click(function(){
+                $('#content-display').fadeOut('fast');
+                $('#content-background').fadeOut('fast');
+            });
         }
     });
 
