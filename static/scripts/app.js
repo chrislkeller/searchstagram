@@ -1,4 +1,5 @@
 (function(){
+
     window.App = {
         Models: {},
         Collections: {},
@@ -11,7 +12,7 @@
     };
 
     /* operations for content header */
-    App.Views.renderPage = Backbone.View.extend({
+    App.Views.InitPage = Backbone.View.extend({
 
         tagName: 'span',
 
@@ -27,7 +28,7 @@
         },
 
         addressSearch: function(){
-            var addSearchForm = new App.Views.addressForm();
+            var addSearchForm = new App.Views.AddressForm();
             $('#submission-form').html(addSearchForm.render().el);
             $('input[id="addressSearch').geocomplete({
                 details: 'form'
@@ -35,7 +36,7 @@
         },
 
         findMe: function(){
-            var addLocationForm = new App.Views.locationForm();
+            var addLocationForm = new App.Views.LocationForm();
             $('#submission-form').html(addLocationForm.render().el);
 
             if (navigator.geolocation) {
@@ -57,7 +58,7 @@
     });
 
     /* operations for address submission form */
-    App.Views.addressForm = Backbone.View.extend({
+    App.Views.AddressForm = Backbone.View.extend({
 
         id: 'submission-form',
 
@@ -76,7 +77,7 @@
         submitData: function(){
             $('.progress').removeClass('hidden');
             $('#data-results').empty();
-            var processData = new App.Views.processData();
+            var processData = new App.Views.ProcessData();
             processData.queryAPIForData();
         },
 
@@ -88,7 +89,7 @@
     });
 
     /* operations for geolocation form */
-    App.Views.locationForm = Backbone.View.extend({
+    App.Views.LocationForm = Backbone.View.extend({
 
         id: 'location-form',
 
@@ -107,7 +108,7 @@
         submitData: function(){
             $('.progress').removeClass('hidden');
             $('#data-results').empty();
-            var processData = new App.Views.processData();
+            var processData = new App.Views.ProcessData();
             processData.queryAPIForData();
         },
 
@@ -164,7 +165,7 @@
         template: template('data-results-template'),
 
         render: function(){
-            var addDisplayToggle = new App.Views.processData();
+            var addDisplayToggle = new App.Views.ProcessData();
             $('#display-toggle').html(addDisplayToggle.render().el);
             this.$el.html(this.template(this.model.toJSON()));
             return this;
@@ -172,7 +173,7 @@
 
     });
 
-    App.Views.processData = Backbone.View.extend({
+    App.Views.ProcessData = Backbone.View.extend({
 
         className: 'btn-group btn-group-justified',
 
@@ -198,8 +199,21 @@
         processData: function(data){
             $('#data-results').empty();
             $('.progress').addClass('hidden');
+
             var listView = new App.Views.Images({collection: new App.Collections.Images(data.result)});
             $('#data-results').append(listView.render().el);
+
+            // create an instance of the model with a collection
+            var map = new App.Models.Map({
+                markers: new App.Collections.Markers(data.result)
+            });
+
+            // create an instance of the view
+            var addMapView = new App.Views.MapView({model:map});
+
+            // render the map
+            addMapView.render(data);
+
         },
 
         events: {
@@ -208,13 +222,13 @@
         },
 
         listView: function(data){
-            //$('#data-results').removeClass('hidden');
-            //$('#content-map-canvas').addClass('hidden');
+            $('#data-results').removeClass('hidden');
+            $('#content-map-canvas').addClass('hidden');
         },
 
         mapView: function(data){
-            //$('#data-results').addClass('hidden');
-            //$('#content-map-canvas').removeClass('hidden');
+            $('#data-results').addClass('hidden');
+            $('#content-map-canvas').removeClass('hidden');
         },
 
         render: function(){
@@ -222,100 +236,90 @@
             return this;
         }
     });
-    /* this is there the magic happens */
 
+    App.Models.Map = Backbone.Model.extend({
 
+    });
 
-
-
-/*
     App.Models.Marker = Backbone.Model.extend({
         defaults: {
             id: null,
-            position: new google.maps.LatLng(39.828116,-98.579392),
-            map: null,
-            icon: new google.maps.MarkerImage('/static/images/new-instagram-logo.png'),
-            title: 'Instagram Photo',
-            clickable: true
+            user: 'wwstromberg',
+            user_full_name: 'William Stromberg',
+            link: 'http://instagram.com/wwstromberg',
+            image_source: 'http://distilleryimage1.s3.amazonaws.com/2b8fda2e44a911e39c8b22000a9f18f4_8.jpg',
+            caption: 'Thats a scramble! Onion, peppers, zucchini, and sweet sausage. I love Sunday mornings.',
+            latitude: 34.1377879,
+            longitude: -118.14839359999999,
+            time_date: 'test'
         }
     });
 
     App.Collections.Markers = Backbone.Collection.extend({
         model:App.Models.Marker
     });
-*/
 
-/*
-    App.Views.initialMapView = Backbone.View.extend({
+    App.Views.MarkerView = Backbone.View.extend({
 
-        id: 'content-map-canvas',
+        initialize: function(options) {
 
-        mapOptions: {
-            zoom: 4,
-            center: new google.maps.LatLng(39.828116,-98.579392),
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scrollwheel: false,
-            draggable: true,
-            mapTypeControl: false,
-            navigationControl: true,
-            streetViewControl: false,
-            panControl: false,
-            scaleControl: true,
-            navigationControlOptions: {
-                style: google.maps.NavigationControlStyle.LARGE,
-                position: google.maps.ControlPosition.RIGHT_TOP
-            }
+            var myIcon = L.Icon.extend({
+                iconUrl: 'static/images/new-instagram-logo.png',
+                iconSize: [38, 95],
+                iconAnchor: [22, 94],
+                popupAnchor: [-3, -76]
+            });
+
+            var html =
+                "<h3><a href='http://instagram.com/" + this.model.attributes.user + "target='_blank'>" + this.model.attributes.user +
+                "<br/>(" + this.model.attributes.user_full_name + ")</a></h3>" +
+                "<img src='" + this.model.attributes.image_source + "' width='100px' class='responsive' />" +
+                "<p>" + this.model.attributes.caption + "</p>" +
+                "<p>" + this.model.attributes.latitude + "," + this.model.attributes.longitude + "</p>" +
+                "<p>" + this.model.attributes.time_date + "</p>";
+
+            this.map = options.map;
+            this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-instagram-logo.png'})}).bindPopup(html);
         },
 
-        render: function(){
-            var map = new google.maps.Map(this.el, this.mapOptions);
+        render: function() {
+            this.marker.addTo(this.map);
+            this.marker.on('click', this.onClick);
+        },
 
-            google.maps.event.addDomListener(map, 'idle', function() {
-              center = map.getCenter();
-            });
-
-            google.maps.event.addDomListener(window, 'resize', function() {
-              map.setCenter(new google.maps.LatLng(39.828116,-98.579392));
-            });
-
-            marker = new google.maps.Marker({
-                id: null,
-                position: new google.maps.LatLng(39.828116,-98.579392),
-                map: map,
-                icon: new google.maps.MarkerImage('/static/images/new-instagram-logo.png'),
-                title: 'Instagram Photo',
-                clickable: true
-            });
-
-            return this;
-
+        onClick: function() {
+            $('#content-background').css({'opacity' : '0.7'}).fadeIn('fast');
+            $('#content-display').html('<p style=\"float: right\" id=\"close\"><strong>[X]</strong></p>').fadeIn('slow');
         }
-
     });
-*/
 
-/*
-    App.Views.initialMapMarker = Backbone.View.extend({
 
-        render: function(){
+    App.Views.MapView = Backbone.View.extend({
+        id: '#content-map-canvas',
 
-            var marker = new google.maps.Marker({
-                id: null,
-                position: new google.maps.LatLng(39.828116,-98.579392),
-                map: map,
-                icon: new google.maps.MarkerImage('/static/images/new-instagram-logo.png'),
-                title: 'Instagram Photo',
-                clickable: true
+        render: function(data) {
+
+            var map = this.map = L.map('content-map-canvas', {
+                scrollWheelZoom: false,
+                zoomControl: true
             });
 
+            var center = new L.LatLng(data.geolatitude, data.geolongitude);
+            map.setView(center, 14);
 
-            return marker;
+            L.tileLayer('http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
+                attribution: 'Tiles, data, imagery and map information provided by <a href="http://www.mapquest.com" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and OpenStreetMap contributors.',
+                subdomains: ['otile1','otile2','otile3','otile4']
+            }).addTo(map);
 
-        }
+            // render each of the markers
+            this.markerViews = this.model.get('markers').map(function(marker) {
+                return new App.Views.MarkerView({model:marker, map:map}).render();
+            });
 
+        },
     });
-*/
 
-    var renderPage = new App.Views.renderPage();
+    var renderPage = new App.Views.InitPage();
     $('#content-header').append(renderPage.render().el);
 })();
