@@ -203,17 +203,42 @@
             var listView = new App.Views.Images({collection: new App.Collections.Images(data.result)});
             $('#data-results').append(listView.render().el);
 
-            // create an instance of the model with a collection
-            var map = new App.Models.Map({
-                markers: new App.Collections.Markers(data.result)
-            });
+            // perform som gymnastics so the map is updated with results of second search
+            if ($('#content-map-canvas').hasClass('initial')) {
 
-            // create an instance of the view
-            var addMapView = new App.Views.MapView({model:map});
+                // create an instance of the model with a collection
+                var map = new App.Models.Map({
+                    markers: new App.Collections.Markers(data.result)
+                });
 
-            // render the map
-            addMapView.render(data);
+                // create an instance of the view
+                var addMapView = new App.Views.MapView({model:map});
 
+                // render the map
+                addMapView.render(data);
+
+                $('#content-map-canvas').removeClass('initial');
+
+            } else {
+
+                $('#content-map-canvas').remove();
+
+                $('<div/>', {
+                    id: 'content-map-canvas',
+                }).appendTo('#results-container');
+
+                // create an instance of the model with a collection
+                var map = new App.Models.Map({
+                    markers: new App.Collections.Markers(data.result)
+                });
+
+                // create an instance of the view
+                var addMapView = new App.Views.MapView({model:map});
+
+                // render the map
+                addMapView.render(data);
+
+            }
         },
 
         events: {
