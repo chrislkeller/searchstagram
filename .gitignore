@@ -19,4 +19,5 @@ Thumbs.db
 # Mine #
 config.py
 fabfile.py
+index.py
 BAK_APPLICATION
