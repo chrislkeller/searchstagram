@@ -284,7 +284,6 @@
     });
 
     App.Views.MarkerView = Backbone.View.extend({
-
         initialize: function(options) {
 
             var myIcon = L.Icon.extend({
@@ -292,6 +291,12 @@
                 iconSize: [38, 95],
                 iconAnchor: [22, 94],
                 popupAnchor: [-3, -76]
+            });
+
+
+            var myPopUp = L.Popup.extend({
+                closeButton: false
+
             });
 
             this.htmlContent =
@@ -303,16 +308,17 @@
                 "<p>" + this.model.attributes.time_date + "</p>";
 
             this.map = options.map;
-            this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-instagram-logo.png'})}).bindPopup(this.htmlContent);
+            this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-instagram-logo.png'})});
         },
 
         render: function() {
-            this.marker.addTo(this.map);
+            this.marker.addTo(this.map).bindPopup(this.htmlContent);
             this.marker.on('click', this.onClick);
         },
 
         onClick: function(htmlContent) {
             var infoWindowContent = htmlContent.target._popup._content;
+
             $('#content-background').css({'opacity' : '0.7'}).fadeIn('fast');
             $('#content-display').html('<p style=\"float: right\" id=\"close\"><strong>[X]</strong></p>' + infoWindowContent).fadeIn('slow');
 
@@ -320,6 +326,18 @@
                 $('#content-display').fadeOut('fast');
                 $('#content-background').fadeOut('fast');
             });
+
+        	$('#content-background').click(function(){
+        		$('#content-background').fadeOut('slow');
+        		$('#content-display').fadeOut('slow');
+        	});
+
+        	$(document).keydown(function(e){
+        		if(e.keyCode==27) {
+        			$('#content-background').fadeOut('slow');
+        			$('#content-display').fadeOut('slow');
+        		}
+        	});
         }
     });
 
