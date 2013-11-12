@@ -293,13 +293,7 @@
                 popupAnchor: [-3, -76]
             });
 
-
-            var myPopUp = L.Popup.extend({
-                closeButton: false
-
-            });
-
-            this.htmlContent =
+            var htmlContent =
                 "<h3><a href='http://instagram.com/" + this.model.attributes.user + "target='_blank'>" + this.model.attributes.user +
                 "<br/>(" + this.model.attributes.user_full_name + ")</a></h3>" +
                 "<img src='" + this.model.attributes.image_source + "' width='100px' class='responsive' />" +
@@ -308,36 +302,35 @@
                 "<p>" + this.model.attributes.time_date + "</p>";
 
             this.map = options.map;
+
             this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-instagram-logo.png'})});
-        },
 
-        render: function() {
-            this.marker.addTo(this.map).bindPopup(this.htmlContent);
-            this.marker.on('click', this.onClick);
-        },
+            this.marker.bindPopup(htmlContent).addTo(this.map);
 
-        onClick: function(htmlContent) {
-            var infoWindowContent = htmlContent.target._popup._content;
+            this.marker.on('click', function(htmlContent){
 
-            $('#content-background').css({'opacity' : '0.7'}).fadeIn('fast');
-            $('#content-display').html('<p style=\"float: right\" id=\"close\"><strong>[X]</strong></p>' + infoWindowContent).fadeIn('slow');
+                console.log(htmlContent);
 
-            $('#close').click(function(){
-                $('#content-display').fadeOut('fast');
-                $('#content-background').fadeOut('fast');
+                $('#content-background').css({'opacity' : '0.7'}).fadeIn('fast');
+                $('#content-display').html('<p style=\"float: right\" id=\"close\"><strong>[X]</strong></p>' + htmlContent.target._popup._content).fadeIn('slow');
+
+                $('#close').click(function(){
+                    $('#content-display').fadeOut('fast');
+                    $('#content-background').fadeOut('fast');
+                });
+
+            	$('#content-background').click(function(){
+            		$('#content-background').fadeOut('slow');
+            		$('#content-display').fadeOut('slow');
+            	});
+
+            	$(document).keydown(function(e){
+            		if(e.keyCode==27) {
+            			$('#content-background').fadeOut('slow');
+            			$('#content-display').fadeOut('slow');
+            		}
+            	});
             });
-
-        	$('#content-background').click(function(){
-        		$('#content-background').fadeOut('slow');
-        		$('#content-display').fadeOut('slow');
-        	});
-
-        	$(document).keydown(function(e){
-        		if(e.keyCode==27) {
-        			$('#content-background').fadeOut('slow');
-        			$('#content-display').fadeOut('slow');
-        		}
-        	});
         }
     });
 
