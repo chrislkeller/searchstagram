@@ -238,6 +238,7 @@
                 // render the map
                 addMapView.render(data);
 
+                // remove designator so we can re-render the map
                 $('#content-map-canvas').removeClass('initial');
 
             } else {
@@ -290,14 +291,14 @@
     App.Models.Marker = Backbone.Model.extend({
         defaults: {
             id: null,
-            user: 'wwstromberg',
-            user_full_name: 'William Stromberg',
-            link: 'http://instagram.com/wwstromberg',
-            image_source: 'http://distilleryimage1.s3.amazonaws.com/2b8fda2e44a911e39c8b22000a9f18f4_8.jpg',
-            caption: 'Thats a scramble! Onion, peppers, zucchini, and sweet sausage. I love Sunday mornings.',
+            user: 'user_name',
+            user_full_name: 'User Full Name',
+            link: 'instagram user url',
+            image_source: 'instagram image source',
+            caption: 'instagram image caption',
             latitude: 34.1377879,
             longitude: -118.14839359999999,
-            time_date: 'test'
+            time_date: 'instagram image'
         }
     });
 
@@ -355,7 +356,6 @@
             });
         }
     });
-
 
     App.Views.MapView = Backbone.View.extend({
         id: '#content-map-canvas',
