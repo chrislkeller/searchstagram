@@ -134,14 +134,16 @@
     // describes an image
     App.Models.Image = Backbone.Model.extend({
         defaults: {
-            user: 'wwstromberg',
-            user_full_name: 'William Stromberg',
-            link: 'http://instagram.com/wwstromberg',
-            image_source: 'http://distilleryimage1.s3.amazonaws.com/2b8fda2e44a911e39c8b22000a9f18f4_8.jpg',
-            caption: 'Thats a scramble! Onion, peppers, zucchini, and sweet sausage. I love Sunday mornings.',
+            id: null,
+            result_type: 'result_type',
+            user: 'user',
+            user_full_name: 'user_full_name',
+            link: 'link',
+            image_source: 'image_source',
+            caption: 'caption',
             latitude: 47.601146851,
             longitude: -122.334979731,
-            time_date: 'test'
+            time_date: 'time_date'
         }
     });
 
@@ -219,17 +221,30 @@
 
         processData: function(data){
             $('#data-results').empty();
+
             $('.progress').addClass('hidden');
 
-            var listView = new App.Views.Images({collection: new App.Collections.Images(data.result)});
-            $('#data-results').append(listView.render().el);
+            // initialize new collection
+            var resultsCollection = new App.Collections.Images();
+
+            // add array of instagram images
+            resultsCollection.add(data.result);
+
+            // add array of tweets
+            resultsCollection.add(data.tweets);
+
+            // set the collection to a view
+            var resultsView = new App.Views.Images({collection: resultsCollection});
+
+            // add the view to the page
+            $('#data-results').append(resultsView.render().el);
 
             // perform som gymnastics so the map is updated with results of second search
             if ($('#content-map-canvas').hasClass('initial')) {
 
                 // create an instance of the model with a collection
                 var map = new App.Models.Map({
-                    markers: new App.Collections.Markers(data.result)
+                    markers: resultsCollection
                 });
 
                 // create an instance of the view
@@ -291,14 +306,15 @@
     App.Models.Marker = Backbone.Model.extend({
         defaults: {
             id: null,
-            user: 'user_name',
-            user_full_name: 'User Full Name',
-            link: 'instagram user url',
-            image_source: 'instagram image source',
-            caption: 'instagram image caption',
-            latitude: 34.1377879,
-            longitude: -118.14839359999999,
-            time_date: 'instagram image'
+            result_type: 'result_type',
+            user: 'user',
+            user_full_name: 'user_full_name',
+            link: 'link',
+            image_source: 'image_source',
+            caption: 'caption',
+            latitude: 47.601146851,
+            longitude: -122.334979731,
+            time_date: 'time_date'
         }
     });
 
@@ -307,35 +323,58 @@
     });
 
     App.Views.MarkerView = Backbone.View.extend({
+
+        template: template('data-results-template'),
+
         initialize: function(options) {
 
+            var htmlContent;
+
             var myIcon = L.Icon.extend({
-                iconUrl: 'static/images/new-instagram-logo.png',
+                iconUrl: null,
                 iconSize: [38, 95],
                 iconAnchor: [22, 94],
                 popupAnchor: [-3, -76]
             });
 
-            var htmlContent =
-                "<h3><a href='http://instagram.com/" + this.model.attributes.user + "target='_blank'>" + this.model.attributes.user +
-                "<br/>(" + this.model.attributes.user_full_name + ")</a></h3>" +
-                "<img src='" + this.model.attributes.image_source + "' width='100px' class='responsive' />" +
-                "<p>" + this.model.attributes.caption + "</p>" +
-                "<p>" + this.model.attributes.latitude + "," + this.model.attributes.longitude + "</p>" +
-                "<p>" + this.model.attributes.time_date + "</p>";
+            if (this.model.attributes.result_type === 'instagram'){
+                this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-instagram-logo.png'})});
+
+                /*
+                htmlContent =
+                    "<h3><a href='http://instagram.com/" + this.model.attributes.user + "target='_blank'>" + this.model.attributes.user +
+                    "<br/>(" + this.model.attributes.user_full_name + ")</a></h3>" +
+                    "<img src='" + this.model.attributes.image_source + "' width='100px' class='responsive' />" +
+                    "<p>" + this.model.attributes.caption + "</p>" +
+                    "<p>" + this.model.attributes.latitude + "," + this.model.attributes.longitude + "</p>" +
+                    "<p>" + this.model.attributes.time_date + "</p>";
+                    */
+
+            } else {
+                this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-twitter-logo.png'})});
+
+                /*
+                htmlContent =
+                    "<h3><a href='http://instagram.com/" + this.model.attributes.user + "target='_blank'>" + this.model.attributes.user +
+                    "<br/>(" + this.model.attributes.user_full_name + ")</a></h3>" +
+                    "<p>" + this.model.attributes.caption + "</p>" +
+                    "<p>" + this.model.attributes.latitude + "," + this.model.attributes.longitude + "</p>" +
+                    "<p>" + this.model.attributes.time_date + "</p>";
+                */
+
+            }
 
             this.map = options.map;
 
-            this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-instagram-logo.png'})});
+            this.marker.addTo(this.map);
 
-            this.marker.bindPopup(htmlContent).addTo(this.map);
+            var that = this;
 
-            this.marker.on('click', function(htmlContent){
-
-                console.log(htmlContent);
+            this.marker.on('click', function(){
 
                 $('#content-background').css({'opacity' : '0.7'}).fadeIn('fast');
-                $('#content-display').html('<p style=\"float: right\" id=\"close\"><strong>[X]</strong></p>' + htmlContent.target._popup._content).fadeIn('slow');
+
+                $('#content-display').html(that.template(that.model.attributes)).fadeIn('slow');
 
                 $('#close').click(function(){
                     $('#content-display').fadeOut('fast');

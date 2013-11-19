@@ -1,5 +1,7 @@
 from config import config_settings
+import logging
 from instagram.client import InstagramAPI
+logging.basicConfig(level=logging.DEBUG)
 
 def search_instagram(term_to_query, count, latitude, longitude, min_timestamp, max_timestamp):
     ''' query instagram for images '''
@@ -52,7 +54,7 @@ def search_instagram(term_to_query, count, latitude, longitude, min_timestamp, m
         else:
             caption = None
 
-        image_dict = {'user': user, 'user_full_name': user_full_name, 'link': link, 'image_source': image_source, 'caption': caption, 'latitude': latitude, 'longitude': longitude, 'time_date': time_date}
+        image_dict = {'result_type': 'instagram', 'user': user, 'user_full_name': user_full_name, 'link': link, 'image_source': image_source, 'caption': caption, 'latitude': latitude, 'longitude': longitude, 'time_date': time_date}
 
         list_of_images.append(image_dict)
 
