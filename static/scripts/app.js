@@ -30,6 +30,7 @@
         addressSearch: function(){
             var addSearchForm = new App.Views.AddressForm();
             $('#submission-form').html(addSearchForm.render().el);
+            this.completeDateValues();
             $('input[id="addressSearch').geocomplete({
                 details: 'form'
             });
@@ -38,7 +39,7 @@
         findMe: function(){
             var addLocationForm = new App.Views.LocationForm();
             $('#submission-form').html(addLocationForm.render().el);
-
+            this.completeDateValues();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     $("input[id='latitudeSearch']").attr('value', position.coords.latitude);
@@ -48,6 +49,18 @@
             } else {
                 alert('Sorry, we could not find your location.');
             }
+        },
+
+        completeDateValues: function(){
+            var todayDate = new Date();
+            var year = todayDate.getFullYear();
+            var month = todayDate.getMonth()+1;
+            var today = todayDate.getDate();
+            var yesterday = todayDate.getDate()-1;
+            var startDateValue = year + '-' + month + '-' + yesterday;
+            var endDateValue = year + '-' + month + '-' + today;
+            $("input[id='startDate']").attr('value', startDateValue);
+            $("input[id='endDate']").attr('value', endDateValue);
         },
 
         render: function(){
@@ -187,10 +200,19 @@
         queryAPIForData: function(){
             var latitudeSearch = $('input[id="latitudeSearch"]').val();
             var longitudeSearch = $('input[id="longitudeSearch"]').val();
+            var startDate = $('input[id="startDate"]').val();
+            var startTime = $('input[id="startTime"]').val();
+            var endDate = $('input[id="endDate"]').val();
+            var endTime = $('input[id="endTime"]').val();
             var countSearch = $('input[id="countSearch"]').val();
+
             $.getJSON($SCRIPT_ROOT + '/search-query', {
                 latitude: latitudeSearch,
                 longitude: longitudeSearch,
+                startdate: startDate,
+                starttime: startTime,
+                enddate: endDate,
+                endtime: endTime,
                 count: countSearch
             }, this.processData);
         },
@@ -216,6 +238,7 @@
                 // render the map
                 addMapView.render(data);
 
+                // remove designator so we can re-render the map
                 $('#content-map-canvas').removeClass('initial');
 
             } else {
@@ -268,14 +291,14 @@
     App.Models.Marker = Backbone.Model.extend({
         defaults: {
             id: null,
-            user: 'wwstromberg',
-            user_full_name: 'William Stromberg',
-            link: 'http://instagram.com/wwstromberg',
-            image_source: 'http://distilleryimage1.s3.amazonaws.com/2b8fda2e44a911e39c8b22000a9f18f4_8.jpg',
-            caption: 'Thats a scramble! Onion, peppers, zucchini, and sweet sausage. I love Sunday mornings.',
+            user: 'user_name',
+            user_full_name: 'User Full Name',
+            link: 'instagram user url',
+            image_source: 'instagram image source',
+            caption: 'instagram image caption',
             latitude: 34.1377879,
             longitude: -118.14839359999999,
-            time_date: 'test'
+            time_date: 'instagram image'
         }
     });
 
@@ -333,7 +356,6 @@
             });
         }
     });
-
 
     App.Views.MapView = Backbone.View.extend({
         id: '#content-map-canvas',

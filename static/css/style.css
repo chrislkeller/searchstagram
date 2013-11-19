@@ -8,7 +8,7 @@
 
 #content-map-canvas img {max-width: none;}
 
-#image-container .image-result {height: 550px; margin: 15px 0 15px 0; text-align: center;}
+#image-container .image-result {text-align: center;}
 
 #image-container .image-result img {max-width: 90%; margin: 5% 0 5% 0;}
 
@@ -21,7 +21,7 @@
 #content-display img {width: 80%; margin: 0 10% 15px 10%;}
 
 /* -- media queries -- */
-@media (max-width: 480px) {
+@media (min-width: 320px) {
     .container{max-width: 90%;}
     #content-map-canvas {width: 90%; height: 700px; margin: 0 5% 0 5%;}
     #content-display {max-width: 80%; display: none; position: fixed; left: 10%; top: 5%;}
