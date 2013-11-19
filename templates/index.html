@@ -96,11 +96,21 @@
     </script>
 
     <script id="data-results-template" type="text/template">
-        <h3><a href="http://instagram.com/<%= user %>" target="_blank"><%= user %><br/>(<%= user_full_name %>)</a></h3>
-        <img src="<%= image_source %>" class="responsive" />
-        <p><%= caption %></p>
-        <p><%= latitude %>, <%= longitude %></p>
-        <p><%= time_date %></p>
+        <p style="float: right" id="close"><strong>[X]</strong></p>
+        <% if (obj.result_type === 'instagram') { %>
+            <label>Instagram</label>
+            <h3><a href="http://instagram.com/<%= user %>" target="_blank"><%= user %><br/>(<%= user_full_name %>)</a></h3>
+            <img src="<%= image_source %>" class="responsive" />
+            <p><%= caption %></p>
+            <p><%= latitude %>, <%= longitude %></p>
+            <p><%= time_date %></p>
+        <% } else { %>
+            <label>Tweet</label>
+            <h3><a href="https://twitter.com/<%= user %>/status/<%= link %>" target="_blank"><%= user %><br/>(<%= user_full_name %>)</a></h3>
+            <p><%= caption %></p>
+            <p><%= latitude %>, <%= longitude %></p>
+            <p><%= time_date %></p>
+        <% } %>
     </script>
 
     <script id="display-toggle-template" type="text/template">

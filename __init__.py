@@ -3,6 +3,7 @@ from flask import Flask, jsonify, render_template, request
 import logging
 from search_functions import combine_and_convert_datetime
 from search_instagram import search_instagram
+from search_twitter import search_twitter
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -41,7 +42,8 @@ def search_query():
     min_timestamp = combine_and_convert_datetime(start_date, start_time)
     max_timestamp = combine_and_convert_datetime(end_date, end_time)
     instagram_result = search_instagram(term_to_query, count, latitude, longitude, min_timestamp, max_timestamp)
-    return jsonify(number_of_results=count, geolatitude=latitude, geolongitude=longitude, result=instagram_result)
+    tweet_results = search_twitter(count, latitude, longitude)
+    return jsonify(number_of_results=count, geolatitude=latitude, geolongitude=longitude, result=instagram_result, tweets=tweet_results)
 
 if __name__ == '__main__':
     app.run(debug=True)
