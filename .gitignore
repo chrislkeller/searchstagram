@@ -17,6 +17,7 @@ Icon?
 Thumbs.db
 
 # Mine #
+.webassets-cache
 config.py
 fabfile.py
 index.py
