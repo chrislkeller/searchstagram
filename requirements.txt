@@ -5,6 +5,7 @@ Jinja2==2.7.1
 MarkupSafe==0.18
 Werkzeug==0.9.4
 argparse==1.2.1
+cssmin==0.2.0
 ecdsa==0.10
 httplib2==0.8
 itsdangerous==0.23

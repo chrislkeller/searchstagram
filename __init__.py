@@ -1,13 +1,43 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, jsonify, render_template, request
-import logging
+from flask.ext.assets import Environment, Bundle
+import webassets
 from search_functions import combine_and_convert_datetime
 from search_instagram import search_instagram
 from search_twitter import search_twitter
-
+import logging
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, static_url_path='/static')
+assets = Environment(app)
+
+# combine and compress scripts
+js = Bundle(
+    'scripts/jquery.min.js',
+    'scripts/leaflet.js',
+    'scripts/leaflet.markercluster.js',
+    'scripts/modernizr.min.js',
+    'scripts/underscore-min.js',
+    'scripts/backbone-min.js',
+    'scripts/moment.min.js',
+    'scripts/jquery.address.min.js',
+    'scripts/bootstrap.min.js',
+    'scripts/jquery.geocomplete.min-1.4.js',
+    'scripts/app.js',
+    filters='rjsmin',
+    output='scripts/libs.js'
+)
+assets.register('js_libs', js)
+
+css = Bundle(
+    'css/bootstrap.min.css',
+    'css/leaflet.min.css',
+    'css/MarkerCluster.css',
+    'css/style.css',
+    filters='cssmin',
+    output='css/min.css'
+)
+assets.register('css_all', css)
 
 @app.route('/')
 def index():
@@ -46,4 +76,4 @@ def search_query():
     return jsonify(number_of_results=count, geolatitude=latitude, geolongitude=longitude, result=instagram_result, tweets=tweet_results)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
