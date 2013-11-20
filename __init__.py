@@ -63,7 +63,7 @@ def search_query():
         count = count
 
     # convert our URL params to proper data types
-    term_to_query = str(request.args.get('term'))
+    term_to_query = ''
     latitude = float(request.args.get('latitude'))
     longitude = float(request.args.get('longitude'))
     start_date = request.args.get('startdate')

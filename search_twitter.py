@@ -17,13 +17,13 @@ def search_twitter(count, latitude, longitude):
         geocode='%s,%s,2mi' % (latitude, longitude),
         result_type='recent',
         include_entities=True).items(count):
-        if tweet.coordinates == None:
-            pass
-        else:
+        try:
             latitude = tweet.coordinates['coordinates'][1]
             longitude = tweet.coordinates['coordinates'][0]
             tweet_dict = {'result_type': 'tweet', 'user': tweet.user.screen_name, 'user_full_name': tweet.user.name, 'link': tweet.id, 'image_source': None, 'caption': tweet.text, 'latitude': latitude, 'longitude': longitude, 'time_date': tweet.created_at}
             list_of_tweets.append(tweet_dict)
+        except:
+            pass
 
     return list_of_tweets
 
