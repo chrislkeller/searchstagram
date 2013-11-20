@@ -23,6 +23,7 @@ js = Bundle(
     'scripts/libs/jquery.address.min.js',
     'scripts/libs/bootstrap.min.js',
     'scripts/libs/jquery.geocomplete.min-1.4.js',
+    'scripts/libs/urlize.js',
     'scripts/app.js',
     filters='rjsmin',
     output='scripts/libs.js'
@@ -76,4 +77,4 @@ def search_query():
     return jsonify(number_of_results=count, geolatitude=latitude, geolongitude=longitude, result=instagram_result, tweets=tweet_results)
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
