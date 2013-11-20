@@ -29,7 +29,8 @@
 
         addressSearch: function(){
             var addSearchForm = new App.Views.AddressForm();
-            $('#submission-form').html(addSearchForm.render().el);
+            $('#form').html(addSearchForm.render().el);
+            $('#submission-form').attr('role', 'form');
             this.completeDateValues();
             $('input[id="addressSearch').geocomplete({
                 details: 'form'
@@ -38,7 +39,7 @@
 
         findMe: function(){
             var addLocationForm = new App.Views.LocationForm();
-            $('#submission-form').html(addLocationForm.render().el);
+            $('#form').html(addLocationForm.render().el);
             this.completeDateValues();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -77,6 +78,8 @@
 
         tagName: 'form',
 
+        className: 'form-inline',
+
         template: template('address-form-template'),
 
         initialize: function(){
@@ -103,9 +106,11 @@
     /* operations for geolocation form */
     App.Views.LocationForm = Backbone.View.extend({
 
-        id: 'location-form',
+        id: 'submission-form',
 
         tagName: 'form',
+
+        className: 'form-inline',
 
         template: template('location-form-template'),
 
@@ -159,6 +164,8 @@
 
         id: 'image-container',
 
+        className: 'row',
+
         render: function(){
             this.collection.each(function(image){
                 var imageView = new App.Views.Image({model: image});
@@ -200,6 +207,7 @@
         },
 
         queryAPIForData: function(){
+            var radiusSearch = $('input[id="radiusSearch"]').val();
             var latitudeSearch = $('input[id="latitudeSearch"]').val();
             var longitudeSearch = $('input[id="longitudeSearch"]').val();
             var startDate = $('input[id="startDate"]').val();
@@ -209,6 +217,7 @@
             var countSearch = $('input[id="countSearch"]').val();
 
             $.getJSON($SCRIPT_ROOT + '/search-query', {
+                radius: radiusSearch,
                 latitude: latitudeSearch,
                 longitude: longitudeSearch,
                 startdate: startDate,
@@ -266,7 +275,7 @@
 
                 // create an instance of the model with a collection
                 var map = new App.Models.Map({
-                    markers: new App.Collections.Markers(data.result)
+                    markers: resultsCollection
                 });
 
                 // create an instance of the view
@@ -328,8 +337,6 @@
 
         initialize: function(options) {
 
-            var htmlContent;
-
             var myIcon = L.Icon.extend({
                 iconUrl: null,
                 iconSize: [38, 95],
@@ -339,42 +346,16 @@
 
             if (this.model.attributes.result_type === 'instagram'){
                 this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-instagram-logo.png'})});
-
-                /*
-                htmlContent =
-                    "<h3><a href='http://instagram.com/" + this.model.attributes.user + "target='_blank'>" + this.model.attributes.user +
-                    "<br/>(" + this.model.attributes.user_full_name + ")</a></h3>" +
-                    "<img src='" + this.model.attributes.image_source + "' width='100px' class='responsive' />" +
-                    "<p>" + this.model.attributes.caption + "</p>" +
-                    "<p>" + this.model.attributes.latitude + "," + this.model.attributes.longitude + "</p>" +
-                    "<p>" + this.model.attributes.time_date + "</p>";
-                    */
-
             } else {
                 this.marker = L.marker([this.model.get('latitude'), this.model.get('longitude')], {icon: new myIcon({iconUrl: 'static/images/new-twitter-logo.png'})});
-
-                /*
-                htmlContent =
-                    "<h3><a href='http://instagram.com/" + this.model.attributes.user + "target='_blank'>" + this.model.attributes.user +
-                    "<br/>(" + this.model.attributes.user_full_name + ")</a></h3>" +
-                    "<p>" + this.model.attributes.caption + "</p>" +
-                    "<p>" + this.model.attributes.latitude + "," + this.model.attributes.longitude + "</p>" +
-                    "<p>" + this.model.attributes.time_date + "</p>";
-                */
-
             }
 
             this.map = options.map;
-
             this.marker.addTo(this.map);
-
             var that = this;
-
             this.marker.on('click', function(){
-
                 $('#content-background').css({'opacity' : '0.7'}).fadeIn('fast');
-
-                $('#content-display').html(that.template(that.model.attributes)).fadeIn('slow');
+                $('#content-display').html(that.template(that.model.attributes)).append('<button type="button"class="btn btn-danger btn-group btn-group-justified" id="close">Close</button>').fadeIn('slow');
 
                 $('#close').click(function(){
                     $('#content-display').fadeOut('fast');

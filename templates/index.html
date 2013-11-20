@@ -5,7 +5,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="jumbotron">
                 <div id="content-header"></div>
-                <form id="submission-form"></form>
+                <div id="form"></div>
             </div>
         </div>
     </div>
@@ -26,90 +26,138 @@
 
     <script id="content-header-template" type="text/template">
         <h1>Searchstagram</h1>
-        <p>A quick way to search Instagram photos near you.</p>
-        <h2>Search Instagram photos by <a class="addressSearch" href="javascript:void(0)">address</a> or <a class="findMe" href="javascript:void(0)">your location</a></h2>
+        <p>A quick way to search Instagram photos and Tweets near you.</p>
+        <h2>Search by <a class="addressSearch" href="javascript:void(0)">address</a> or <a class="findMe" href="javascript:void(0)">your location</a></h2>
     </script>
 
     <script id="address-form-template" type="text/template">
         <form id="submission-form" class="form-vertical" role="form">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <label for="addressSearch">Enter an address</label>
+                    <input type="text" class="form-control" id="addressSearch" placeholder="Enter an address">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <label for="countSearch">Number of results</label>
+                    <input type="number" class="form-control" name="count" id="countSearch" value="12">
+                </div>
+            </div>
+            <div class="row">
+                <div class="hidden col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="latitudeSearch">Latitude</label>
+                    <input type="text" class="form-control" name="lat" id="latitudeSearch">
+                </div>
+                <div class="hidden col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="longitudeSearch">Longitude</label>
+                    <input type="text" class="form-control" name="lng" id="longitudeSearch">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" class="form-control" name="startDate" id="startDate">
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="startDate">Start Time</label>
+                    <input type="time" class="form-control" value="12:00" name="startTime" id="startTime">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="endDate">End Date</label>
+                    <input type="date" class="form-control" name="endDate" id="endDate">
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="startDate">End Time</label>
+                    <input type="time" class="form-control" value="12:00" name="endTime" id="endTime">
+                </div>
+            </div>
+            <!--
             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <input type="text" class="form-control" id="addressSearch" placeholder="Enter an address">
+                <label for="radiusSearch">Search Radius</label>
+                <input type="text" class="form-control" name="radius" id="radiusSearch" value="2km">
             </div>
-            <div class="hidden form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <input type="text" class="form-control" name="lat" id="latitudeSearch">
-            </div>
-            <div class="hidden form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <input type="text" class="form-control" name="lng" id="longitudeSearch">
-            </div>
-            <div class="form-group form-inline col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label for="startDate">Start Date</label>
-                <input type="date" class="form-control" name="startDate" id="startDate">
-                <label for="startDate">Start Time</label>
-                <input type="time" class="form-control" value="12:00" name="startTime" id="startTime">
-            </div>
-
-            <div class="form-group form-inline col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label for="endDate">End Date</label>
-                <input type="date" class="form-control" name="endDate" id="endDate">
-                <label for="startDate">End Time</label>
-                <input type="time" class="form-control" value="12:00" name="endTime" id="endTime">
-            </div>
-            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label for="countSearch">Number of images to show</label>
-                <input type="number" class="form-control" name="count" id="countSearch" value="12"placeholder="Number of images">
-            </div>
-            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <button type="button"class="btn btn-success btn-group btn-group-justified" id="submit">Submit</a>
+            -->
+            <div class="row">
+                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <button type="button"class="btn btn-success btn-group btn-group-justified" id="submit">Submit</a>
+                </div>
             </div>
         </form>
     </script>
 
     <script id="location-form-template" type="text/template">
         <form id="submission-form" class="form-vertical" role="form">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <label for="countSearch">Number of results</label>
+                    <input type="number" class="form-control" name="count" id="countSearch" value="12">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="latitudeSearch">Latitude</label>
+                    <input type="text" class="form-control" name="lat" id="latitudeSearch">
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="longitudeSearch">Longitude</label>
+                    <input type="text" class="form-control" name="lng" id="longitudeSearch">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" class="form-control" name="startDate" id="startDate">
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="startDate">Start Time</label>
+                    <input type="time" class="form-control" value="12:00" name="startTime" id="startTime">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="endDate">End Date</label>
+                    <input type="date" class="form-control" name="endDate" id="endDate">
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label for="startDate">End Time</label>
+                    <input type="time" class="form-control" value="12:00" name="endTime" id="endTime">
+                </div>
+            </div>
+            <!--
             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <input type="text" class="form-control" name="lat" id="latitudeSearch">
+                <label for="radiusSearch">Search Radius</label>
+                <input type="text" class="form-control" name="radius" id="radiusSearch" value="2km">
             </div>
-            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <input type="text" class="form-control" name="lng" id="longitudeSearch">
-            </div>
-            <div class="form-group form-inline col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label for="startDate">Start Date</label>
-                <input type="date" class="form-control" value="2013-11-17" name="startDate" id="startDate">
-                <label for="startDate">Start Time</label>
-                <input type="time" class="form-control" value="12:00" name="startTime" id="startTime">
-            </div>
-
-            <div class="form-group form-inline col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label for="endDate">End Date</label>
-                <input type="date" class="form-control" name="endDate" id="endDate">
-                <label for="startDate">End Time</label>
-                <input type="time" class="form-control" value="12:00" name="endTime" id="endTime">
-            </div>
-            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label for="countSearch">Number of images to show</label>
-                <input type="number" class="form-control" name="count" id="countSearch" value="12"placeholder="Number of images">
-            </div>
-            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <button type="button" class="btn btn-success btn-group btn-group-justified" id="submit">Submit</a>
+            -->
+            <div class="row">
+                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <button type="button"class="btn btn-success btn-group btn-group-justified" id="submit">Submit</button>
+                </div>
             </div>
         </form>
     </script>
 
     <script id="data-results-template" type="text/template">
-        <p style="float: right" id="close"><strong>[X]</strong></p>
         <% if (obj.result_type === 'instagram') { %>
-            <label>Instagram</label>
+        <span class="label label-primary">Instagram</span>
             <h3><a href="http://instagram.com/<%= user %>" target="_blank"><%= user %><br/>(<%= user_full_name %>)</a></h3>
             <img src="<%= image_source %>" class="responsive" />
-            <p><%= caption %></p>
             <p><%= latitude %>, <%= longitude %></p>
             <p><%= time_date %></p>
+            <% if (obj.caption) { %>
+                <p><%= obj.caption.substring(0, 100) %>...</p>
+            <% } %>
         <% } else { %>
-            <label>Tweet</label>
+            <span class="label label-info">Tweet</span>
             <h3><a href="https://twitter.com/<%= user %>/status/<%= link %>" target="_blank"><%= user %><br/>(<%= user_full_name %>)</a></h3>
-            <p><%= caption %></p>
             <p><%= latitude %>, <%= longitude %></p>
             <p><%= time_date %></p>
+            <% if (obj.caption) { %>
+                <p><%= obj.caption.substring(0, 100) %>...</p>
+            <% } %>
         <% } %>
     </script>
 
