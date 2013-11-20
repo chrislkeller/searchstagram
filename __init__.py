@@ -13,16 +13,16 @@ assets = Environment(app)
 
 # combine and compress scripts
 js = Bundle(
-    'scripts/jquery.min.js',
-    'scripts/leaflet.js',
-    'scripts/leaflet.markercluster.js',
-    'scripts/modernizr.min.js',
-    'scripts/underscore-min.js',
-    'scripts/backbone-min.js',
-    'scripts/moment.min.js',
-    'scripts/jquery.address.min.js',
-    'scripts/bootstrap.min.js',
-    'scripts/jquery.geocomplete.min-1.4.js',
+    'scripts/libs/jquery.min.js',
+    'scripts/libs/leaflet.js',
+    'scripts/libs/leaflet.markercluster.js',
+    'scripts/libs/modernizr.min.js',
+    'scripts/libs/underscore-min.js',
+    'scripts/libs/backbone-min.js',
+    'scripts/libs/moment.min.js',
+    'scripts/libs/jquery.address.min.js',
+    'scripts/libs/bootstrap.min.js',
+    'scripts/libs/jquery.geocomplete.min-1.4.js',
     'scripts/app.js',
     filters='rjsmin',
     output='scripts/libs.js'
