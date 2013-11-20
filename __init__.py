@@ -23,7 +23,6 @@ js = Bundle(
     'scripts/libs/jquery.address.min.js',
     'scripts/libs/bootstrap.min.js',
     'scripts/libs/jquery.geocomplete.min-1.4.js',
-    'scripts/libs/urlize.js',
     'scripts/app.js',
     filters='rjsmin',
     output='scripts/libs.js'
