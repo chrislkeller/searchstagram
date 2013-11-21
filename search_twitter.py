@@ -4,17 +4,17 @@ import tweepy
 
 logging.basicConfig(level=logging.DEBUG)
 
-def search_twitter(count, latitude, longitude, radius):
+def search_twitter(term_to_query, count, latitude, longitude, radius, min_timestamp, max_timestamp):
     auth1 = tweepy.auth.OAuthHandler(config_settings['TWEEPY_CONSUMER_KEY'], config_settings['TWEEPY_CONSUMER_SECRET'])
     auth1.set_access_token(config_settings['TWEEPY_ACCESS_TOKEN'], config_settings['TWEEPY_ACCESS_TOKEN_SECRET'])
     api = tweepy.API(auth1)
-
     list_of_tweets = []
-
     for tweet in tweepy.Cursor(
         api.search,
-        q='',
+        q=term_to_query,
         geocode='%s,%s,%s' % (latitude, longitude, radius),
+        since=min_timestamp,
+        until=max_timestamp,
         result_type='recent',
         include_entities=True).items(count):
         try:
@@ -25,7 +25,8 @@ def search_twitter(count, latitude, longitude, radius):
         except:
             pass
 
+    logging.debug(list_of_tweets)
     return list_of_tweets
 
 if __name__ == '__main__':
-    search_twitter(5, '40.7070539', '-74.0130016', '2mi')
+    search_twitter('food', 5, '40.7070539', '-74.0130016', '2mi', 1384862400, 1384948800)

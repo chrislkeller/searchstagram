@@ -3,7 +3,7 @@ import logging
 from instagram.client import InstagramAPI
 logging.basicConfig(level=logging.DEBUG)
 
-def search_instagram(term_to_query, count, latitude, longitude, min_timestamp, max_timestamp):
+def search_instagram(term_to_query, count, latitude, longitude, radius, min_timestamp, max_timestamp):
     ''' query instagram for images '''
 
     # create a holding container for what the api returns

@@ -72,8 +72,26 @@ def search_query():
     end_time = request.args.get('endtime')
     min_timestamp = combine_and_convert_datetime(start_date, start_time)
     max_timestamp = combine_and_convert_datetime(end_date, end_time)
-    instagram_result = search_instagram(term_to_query, count, latitude, longitude, min_timestamp, max_timestamp)
-    tweet_results = search_twitter(count, latitude, longitude, '2mi')
+
+    instagram_result = search_instagram(
+        term_to_query,
+        count, latitude,
+        longitude,
+        '2mi',
+        min_timestamp,
+        max_timestamp
+    )
+
+    tweet_results = search_twitter(
+        term_to_query,
+        count,
+        latitude,
+        longitude,
+        '2mi',
+        min_timestamp,
+        max_timestamp
+    )
+
     return jsonify(
         number_of_results=count,
         geolatitude=latitude,
