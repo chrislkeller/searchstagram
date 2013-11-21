@@ -110,18 +110,15 @@
         exportView: function(data){
             var countSearch = $('input[id="countSearch"]').val();
 
-            $.getJSON($SCRIPT_ROOT + '/export-csv', {
-                count: countSearch
+            $.getJSON($SCRIPT_ROOT + '/download-csv', {
+                download: 'yes'
             }, this.promptDownload);
 
         },
 
-        promptDownload: function(){
-            console.log('works');
+        promptDownload: function(data){
+            console.log('boom');
         },
-
-
-
 
         render: function(){
             $('#data-results-filter').removeClass('hidden');

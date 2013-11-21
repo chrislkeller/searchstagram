@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, jsonify, render_template, request
+import logging
+from flask import Flask, jsonify, render_template, request, Response, send_from_directory
 from flask.ext.assets import Environment, Bundle
-from multiprocessing import Pool
 from config import config_settings
-from search_functions import combine_and_convert_datetime
+from search_functions import combine_and_convert_datetime, write_to_csv
 from search_instagram import search_instagram
 from search_twitter import search_twitter
+from concurrent import futures
 import webassets
-import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, static_url_path='/static')
 app.config['ASSETS_DEBUG'] = config_settings['DEBUG']
+app.config['UPLOAD_FOLDER'] = 'exports'
+
 assets = Environment(app)
 
 # combine and compress scripts
@@ -27,9 +30,19 @@ js = Bundle(
     'scripts/libs/bootstrap.min.js',
     'scripts/libs/jquery.geocomplete.min-1.4.js',
     'scripts/app.js',
-    'scripts/models/*.js',
-    'scripts/collections/*.js',
-    'scripts/views/*.js',
+    'scripts/models/map.js',
+    'scripts/models/marker.js',
+    'scripts/models/result.js',
+    'scripts/collections/markers.js',
+    'scripts/collections/results.js',
+    'scripts/views/addressForm.js',
+    'scripts/views/initPage.js',
+    'scripts/views/locationForm.js',
+    'scripts/views/mapView.js',
+    'scripts/views/markerView.js',
+    'scripts/views/processData.js',
+    'scripts/views/result.js',
+    'scripts/views/results.js',
     filters='rjsmin',
     output='scripts/libs.js',
 )
@@ -79,30 +92,32 @@ def search_query():
     min_timestamp = combine_and_convert_datetime(start_date, start_time)
     max_timestamp = combine_and_convert_datetime(end_date, end_time)
 
-    pool = Pool(processes=2)
+    with futures.ThreadPoolExecutor(max_workers=2) as executor:
+        instagram_api = executor.submit(
+            search_instagram,
+                term_to_query,
+                count, latitude,
+                longitude,
+                '2mi',
+                min_timestamp,
+                max_timestamp
+        )
 
-    instagram_promise = pool.apply_async(search_instagram, (
-        term_to_query,
-        count, latitude,
-        longitude,
-        '2mi',
-        min_timestamp,
-        max_timestamp
-    ))
+        tweet_api = executor.submit(
+            search_twitter,
+                term_to_query,
+                count,
+                latitude,
+                longitude,
+                '2mi',
+                min_timestamp,
+                max_timestamp
+        )
 
-    tweet_promise = pool.apply_async(search_twitter, (
-        term_to_query,
-        count,
-        latitude,
-        longitude,
-        '2mi',
-        min_timestamp,
-        max_timestamp
-    ))
+        instagram_results = instagram_api.result()
+        tweet_results = tweet_api.result()
 
-    instagram_results = instagram_promise.get()
-    tweet_results = tweet_promise.get()
-    export_csv(instagram_results, tweet_results)
+    write_to_csv(instagram_results, tweet_results)
 
     return jsonify(
         zoom = 14,
@@ -113,13 +128,30 @@ def search_query():
         tweets = tweet_results
     )
 
-@app.route('/export-csv')
-def export_csv(instagram_results, tweet_results):
+@app.route('/download-csv')
+def download_csv():
 
-    logging.debug(instagram_results, tweet_results)
+    return send_from_directory(
+        app.config['UPLOAD_FOLDER'],
+        'data-export.csv',
+        as_attachment=True,
+        mimetype='text/document'
+    )
 
+    '''
+    csv = "nicklaskingo"
+    response = make_response(csv)
+    response.headers["Content-Disposition"] = "attachment; filename=books.csv"
+    return response
 
+    return Response(
+        mimetype='text/docuemnt',
+        headers={'Content-Disposition': 'attachment; filename=data-export.csv'})
 
+    return jsonify(
+        message = 'Your file is downloading'
+    )
+    '''
 
 if __name__ == '__main__':
     app.run(debug=config_settings['DEBUG'])
