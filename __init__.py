@@ -24,7 +24,7 @@ js = Bundle(
     'scripts/libs/bootstrap.min.js',
     'scripts/libs/jquery.geocomplete.min-1.4.js',
     'scripts/app.js',
-    filters='rjsmin',
+    #filters='rjsmin',
     output='scripts/libs.js'
 )
 assets.register('js_libs', js)
@@ -93,11 +93,12 @@ def search_query():
     )
 
     return jsonify(
-        number_of_results=count,
-        geolatitude=latitude,
-        geolongitude=longitude,
-        result=instagram_result,
-        tweets=tweet_results
+        zoom = 14,
+        number_of_results = count,
+        geolatitude = latitude,
+        geolongitude = longitude,
+        result = instagram_result,
+        tweets = tweet_results
     )
 
 if __name__ == '__main__':

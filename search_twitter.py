@@ -24,8 +24,6 @@ def search_twitter(term_to_query, count, latitude, longitude, radius, min_timest
             list_of_tweets.append(tweet_dict)
         except:
             pass
-
-    logging.debug(list_of_tweets)
     return list_of_tweets
 
 if __name__ == '__main__':

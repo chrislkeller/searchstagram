@@ -24,7 +24,8 @@
 
         events: {
             'click a.addressSearch': 'addressSearch',
-            'click a.findMe': 'findMe'
+            'click a.findMe': 'findMe',
+            'click a.clickMap': 'clickMap'
         },
 
         addressSearch: function(){
@@ -51,6 +52,32 @@
                 alert('Sorry, we could not find your location.');
             }
         },
+
+        /*
+        clickMap: function(){
+
+            console.log('works');
+
+            // create an instance of the model with a collection
+            var map = new App.Models.Map({});
+
+            // create an instance of the map
+            var clickMapView = new App.Views.MapView({model:map});
+
+            // this should be moved to the map model defaults?
+            var initialMapData = {
+                zoom: 4,
+                geolatitude: 39.828116,
+                geolongitude: -98.579392
+            };
+
+            // render the map
+            clickMapView.render(initialMapData);
+
+            // remove designator so we can re-render the map
+            $('#content-map-canvas').removeClass('initial');
+        },
+        */
 
         completeDateValues: function(){
             var todayDate = new Date();
@@ -248,7 +275,7 @@
             // add the view to the page
             $('#data-results').append(resultsView.render().el);
 
-            // perform som gymnastics so the map is updated with results of second search
+            // perform some gymnastics so the map is updated with results of second search
             if ($('#content-map-canvas').hasClass('initial')) {
 
                 // create an instance of the model with a collection
@@ -388,7 +415,8 @@
             });
 
             var center = new L.LatLng(data.geolatitude, data.geolongitude);
-            map.setView(center, 14);
+
+            map.setView(center, data.zoom);
 
             L.tileLayer('http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
                 attribution: 'Tiles, data, imagery and map information provided by <a href="http://www.mapquest.com" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and OpenStreetMap contributors.',
@@ -399,7 +427,6 @@
             this.markerViews = this.model.get('markers').map(function(marker) {
                 return new App.Views.MarkerView({model:marker, map:map}).render();
             });
-
         },
     });
 
