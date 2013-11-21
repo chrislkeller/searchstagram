@@ -107,19 +107,6 @@
             $('#content-map-canvas').removeClass('hidden');
         },
 
-        exportView: function(data){
-            var countSearch = $('input[id="countSearch"]').val();
-
-            $.getJSON($SCRIPT_ROOT + '/download-csv', {
-                download: 'yes'
-            }, this.promptDownload);
-
-        },
-
-        promptDownload: function(data){
-            console.log('boom');
-        },
-
         render: function(){
             $('#data-results-filter').removeClass('hidden');
             this.$el.html((this.template));

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from config import config_settings
 import time, datetime, calendar, csv, logging
 from collections import OrderedDict
 
@@ -33,7 +34,7 @@ def write_to_csv(instagram_results, tweet_results):
     ]
 
     # opens csv file to write headers
-    with open('exports/data-export.csv', 'wb', buffering=0) as newCsvFile:
+    with open(config_settings['FILE_PATH'], 'wb', buffering=0) as newCsvFile:
         dataForCsv = csv.writer(newCsvFile, delimiter=',', quoting=csv.QUOTE_ALL)
 
         dataForCsv.writerow(csv_headers)
