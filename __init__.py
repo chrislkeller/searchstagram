@@ -1,31 +1,50 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, jsonify, render_template, request
+import logging
+from flask import Flask, jsonify, render_template, request, Response, send_from_directory
 from flask.ext.assets import Environment, Bundle
-import webassets
-from search_functions import combine_and_convert_datetime
+from config import config_settings
+from search_functions import combine_and_convert_datetime, write_to_csv
 from search_instagram import search_instagram
 from search_twitter import search_twitter
-import logging
+from concurrent import futures
+import webassets
+
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, static_url_path='/static')
+app.config['ASSETS_DEBUG'] = config_settings['DEBUG']
+app.config['UPLOAD_FOLDER'] = 'exports'
+
 assets = Environment(app)
 
 # combine and compress scripts
 js = Bundle(
-    'scripts/jquery.min.js',
-    'scripts/leaflet.js',
-    'scripts/leaflet.markercluster.js',
-    'scripts/modernizr.min.js',
-    'scripts/underscore-min.js',
-    'scripts/backbone-min.js',
-    'scripts/moment.min.js',
-    'scripts/jquery.address.min.js',
-    'scripts/bootstrap.min.js',
-    'scripts/jquery.geocomplete.min-1.4.js',
+    'scripts/libs/jquery.min.js',
+    'scripts/libs/leaflet.js',
+    'scripts/libs/leaflet.markercluster.js',
+    'scripts/libs/modernizr.min.js',
+    'scripts/libs/underscore-min.js',
+    'scripts/libs/backbone-min.js',
+    'scripts/libs/moment.min.js',
+    'scripts/libs/jquery.address.min.js',
+    'scripts/libs/bootstrap.min.js',
+    'scripts/libs/jquery.geocomplete.min-1.4.js',
     'scripts/app.js',
+    'scripts/models/map.js',
+    'scripts/models/marker.js',
+    'scripts/models/result.js',
+    'scripts/collections/markers.js',
+    'scripts/collections/results.js',
+    'scripts/views/addressForm.js',
+    'scripts/views/initPage.js',
+    'scripts/views/locationForm.js',
+    'scripts/views/mapView.js',
+    'scripts/views/markerView.js',
+    'scripts/views/processData.js',
+    'scripts/views/result.js',
+    'scripts/views/results.js',
     filters='rjsmin',
-    output='scripts/libs.js'
+    output='scripts/libs.js',
 )
 assets.register('js_libs', js)
 
@@ -62,18 +81,77 @@ def search_query():
         count = count
 
     # convert our URL params to proper data types
-    term_to_query = str(request.args.get('term'))
+    term_to_query = ''
     latitude = float(request.args.get('latitude'))
     longitude = float(request.args.get('longitude'))
+    radius = request.args.get('radius')
     start_date = request.args.get('startdate')
     start_time = request.args.get('starttime')
     end_date = request.args.get('enddate')
     end_time = request.args.get('endtime')
     min_timestamp = combine_and_convert_datetime(start_date, start_time)
     max_timestamp = combine_and_convert_datetime(end_date, end_time)
-    instagram_result = search_instagram(term_to_query, count, latitude, longitude, min_timestamp, max_timestamp)
-    tweet_results = search_twitter(count, latitude, longitude)
-    return jsonify(number_of_results=count, geolatitude=latitude, geolongitude=longitude, result=instagram_result, tweets=tweet_results)
+
+    with futures.ThreadPoolExecutor(max_workers=2) as executor:
+        instagram_api = executor.submit(
+            search_instagram,
+                term_to_query,
+                count, latitude,
+                longitude,
+                '2mi',
+                min_timestamp,
+                max_timestamp
+        )
+
+        tweet_api = executor.submit(
+            search_twitter,
+                term_to_query,
+                count,
+                latitude,
+                longitude,
+                '2mi',
+                min_timestamp,
+                max_timestamp
+        )
+
+        instagram_results = instagram_api.result()
+        tweet_results = tweet_api.result()
+
+    write_to_csv(instagram_results, tweet_results)
+
+    return jsonify(
+        zoom = 14,
+        number_of_results = count,
+        geolatitude = latitude,
+        geolongitude = longitude,
+        result = instagram_results,
+        tweets = tweet_results
+    )
+
+@app.route('/download-csv')
+def download_csv():
+
+    return send_from_directory(
+        app.config['UPLOAD_FOLDER'],
+        'data-export.csv',
+        as_attachment=True,
+        mimetype='text/document'
+    )
+
+    '''
+    csv = "nicklaskingo"
+    response = make_response(csv)
+    response.headers["Content-Disposition"] = "attachment; filename=books.csv"
+    return response
+
+    return Response(
+        mimetype='text/docuemnt',
+        headers={'Content-Disposition': 'attachment; filename=data-export.csv'})
+
+    return jsonify(
+        message = 'Your file is downloading'
+    )
+    '''
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=config_settings['DEBUG'])

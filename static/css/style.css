@@ -8,9 +8,13 @@
 
 #content-map-canvas img {max-width: none;}
 
-#image-container .image-result {text-align: center;}
+#result-container .result-instance {min-height: 470px; text-align: center;}
 
-#image-container .image-result img {max-width: 90%; margin: 5% 0 5% 0;}
+#result-container .result-instance .instagram {background: rgba(236, 124, 45, 0.5);}
+
+#result-container .result-instance .twitter {background: rgba(228, 217, 203, 0.5);}
+
+#result-container .result-instance img {max-width: 90%; margin: 5% 0 5% 0;}
 
 #content-background {display: none; position: fixed; height: 100%; width: 100%; top: 0; left: 0; background: #000000; z-index: 1000; }
 
@@ -23,25 +27,25 @@
 /* -- media queries -- */
 @media (min-width: 320px) {
     .container{max-width: 90%;}
+    /*.jumbotron h1 {font-size: 140%;}*/
     #content-map-canvas {width: 90%; height: 700px; margin: 0 5% 0 5%;}
     #content-display {max-width: 80%; display: none; position: fixed; left: 10%; top: 5%;}
+    #result-container .result-instance {min-height: 380px; text-align: center;}
 }
 
-@media (min-width: 481px) {
+@media (min-width: 480px) {
     .container{max-width: 90%;}
     #content-map-canvas {width: 90%; height: 700px; margin: 0 5% 0 5%;}
     #content-display {max-width: 80%; display: none; position: fixed; left: 10%; top: 5%;}
 }
 
 @media (min-width: 768px) {
+    .container{max-width: 90%;}
     #content-map-canvas {width: 90%; height: 700px; margin: 0 5% 0 5%;}
     #content-display {max-width: 80%; display: none; position: fixed; left: 10%; top: 5%;}
 }
 
 @media (min-width: 992px) {
-    #content-display {max-width: 40%; display: none; position: fixed; left: 30%; top: 5%;}
-}
-
-@media (min-width: 3000px) {
+    .container{max-width: 90%;}
     #content-display {max-width: 40%; display: none; position: fixed; left: 30%; top: 5%;}
 }
