@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, jsonify, render_template, request
 from flask.ext.assets import Environment, Bundle
+from multiprocessing import Pool
 from config import config_settings
 from search_functions import combine_and_convert_datetime
 from search_instagram import search_instagram
@@ -10,6 +11,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, static_url_path='/static')
+app.config['ASSETS_DEBUG'] = config_settings['DEBUG']
 assets = Environment(app)
 
 # combine and compress scripts
@@ -25,8 +27,11 @@ js = Bundle(
     'scripts/libs/bootstrap.min.js',
     'scripts/libs/jquery.geocomplete.min-1.4.js',
     'scripts/app.js',
+    'scripts/models/*.js',
+    'scripts/collections/*.js',
+    'scripts/views/*.js',
     filters='rjsmin',
-    output='scripts/libs.js'
+    output='scripts/libs.js',
 )
 assets.register('js_libs', js)
 
@@ -74,16 +79,18 @@ def search_query():
     min_timestamp = combine_and_convert_datetime(start_date, start_time)
     max_timestamp = combine_and_convert_datetime(end_date, end_time)
 
-    instagram_result = search_instagram(
+    pool = Pool(processes=2)
+
+    instagram_promise = pool.apply_async(search_instagram, (
         term_to_query,
         count, latitude,
         longitude,
         '2mi',
         min_timestamp,
         max_timestamp
-    )
+    ))
 
-    tweet_results = search_twitter(
+    tweet_promise = pool.apply_async(search_twitter, (
         term_to_query,
         count,
         latitude,
@@ -91,16 +98,28 @@ def search_query():
         '2mi',
         min_timestamp,
         max_timestamp
-    )
+    ))
+
+    instagram_results = instagram_promise.get()
+    tweet_results = tweet_promise.get()
+    export_csv(instagram_results, tweet_results)
 
     return jsonify(
         zoom = 14,
         number_of_results = count,
         geolatitude = latitude,
         geolongitude = longitude,
-        result = instagram_result,
+        result = instagram_results,
         tweets = tweet_results
     )
+
+@app.route('/export-csv')
+def export_csv(instagram_results, tweet_results):
+
+    logging.debug(instagram_results, tweet_results)
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=config_settings['DEBUG'])

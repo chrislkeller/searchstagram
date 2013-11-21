@@ -18,6 +18,19 @@
                     <div class="progress-bar"  role="progressbar" aria-valuenow="100" style="width: 100%"></div>
                 </div>
                 <div id="display-toggle"></div>
+
+                <!--
+                <div id="data-results-filter">
+                    <h4>Filter results</h4>
+                    <label class="checkbox-inline" for="instagram">
+                        <input type="checkbox" name="instagram" value=".instagram" id="instagram" checked> Instagram
+                    </label>
+                    <label class="checkbox-inline" for="twitter">
+                        <input type="checkbox" name="twitter" value=".twitter" id="twitter" checked> Twitter
+                    </label>
+                </div>
+                -->
+
                 <div id="data-results" class="hidden"></div>
                 <div id="content-map-canvas" class="initial"></div>
             </div>
@@ -142,27 +155,30 @@
 
     <script id="data-results-template" type="text/template">
         <% if (obj.result_type === 'instagram') { %>
-        <span class="label label-primary">Instagram</span>
-            <h3><a href="http://instagram.com/<%= user %>" target="_blank"><%= user %><br/>(<%= user_full_name %>)</a></h3>
-            <img src="<%= image_source %>" class="responsive" />
-            <p><%= latitude %>, <%= longitude %></p>
-            <p><%= time_date %></p>
-            <% if (obj.caption) { %>
-                <p><%= obj.caption.substring(0, 100) %>...</p>
-            <% } %>
+            <div class="instagram">
+                <h3><a href="http://instagram.com/<%= user %>" target="_blank"><%= user %></a></h3>
+                <p>(<%= user_full_name %>)</p>
+                <img src="<%= image_source %>" class="responsive" />
+                <p><%= latitude %>, <%= longitude %></p>
+                <p><%= time_date %></p>
+                <% if (obj.caption) { %>
+                    <p><%= obj.caption.substring(0, 25) %>...</p>
+                <% } %>
+            </div>
         <% } else { %>
-            <span class="label label-info">Tweet</span>
-            <h3><a href="https://twitter.com/<%= user %>/status/<%= link %>" target="_blank"><%= user %><br/>(<%= user_full_name %>)</a></h3>
-            <p><%= latitude %>, <%= longitude %></p>
-            <p><%= time_date %></p>
-            <% if (obj.caption) { %>
-                <p><%= obj.caption.substring(0, 100) %>...</p>
-            <% } %>
+            <div class="twitter">
+                <h3><a href="https://twitter.com/<%= user %>/status/<%= link %>" target="_blank"><%= user %></a></h3>
+                <p>(<%= user_full_name %>)</p>
+                <p><%= latitude %>, <%= longitude %></p>
+                <p><%= time_date %></p>
+                <p><%= caption %></p>
+            </div>
         <% } %>
     </script>
 
     <script id="display-toggle-template" type="text/template">
-        <a id="map-view" class="btn btn-primary active" href="javascript:void(0)">Map View</a>
-        <a id="list-view" class="btn btn-primary" href="javascript:void(0)">List View</a>
+        <a id="map-view" class="btn btn-primary active" href="javascript:void(0)">View on Map</a>
+        <a id="list-view" class="btn btn-primary" href="javascript:void(0)">View as List</a>
+        <a id="export-view" class="btn btn-primary" href="javascript:void(0)">Export to CSV</a>
     </script>
 {% endblock %}
