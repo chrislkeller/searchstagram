@@ -13,11 +13,11 @@ import webassets
 logging.basicConfig(level=logging.DEBUG)
 
 PROJ_PATH, _ = os.path.split(os.path.abspath(os.path.realpath(__file__)))
-UPLOAD_FOLDER = os.path.join(PROJ_PATH, 'exports')
+EXPORT_FOLDER = os.path.join(PROJ_PATH, 'exports')
 
 app = Flask(__name__, static_url_path='/static')
 app.config['ASSETS_DEBUG'] = config_settings['DEBUG']
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['EXPORT_FOLDER'] = EXPORT_FOLDER
 
 assets = Environment(app)
 
@@ -136,10 +136,10 @@ def search_query():
 def download_csv():
 
     return send_from_directory(
-        app.config['UPLOAD_FOLDER'],
+        app.config['EXPORT_FOLDER'],
         'data-export.csv',
         as_attachment=True,
-        mimetype='text/document'
+        mimetype='Document'
     )
 
     '''

@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 from config import config_settings
+import os
 import time, datetime, calendar, csv, logging
 from collections import OrderedDict
 
 logging.basicConfig(level=logging.DEBUG)
+
+PROJ_PATH, _ = os.path.split(os.path.abspath(os.path.realpath(__file__)))
+EXPORT_FOLDER = os.path.join(PROJ_PATH, 'exports')
 
 instagram_results = [{'caption': '#TBT. How funny do I look @juicycinn \U0001f602\U0001f602\U0001f602\U0001f602\U0001f602\U0001f602 wanna be rider.......', 'link': 'http://instagram.com/p/g-azBEFfC6/', 'image_source': 'http://distilleryimage2.s3.amazonaws.com/791f200052a111e387ee1245c8458940_8.jpg', 'latitude': 40.710254903, 'result_type': 'instagram', 'time_date': datetime.datetime(2013, 11, 21, 11, 38, 42), 'user_full_name': 'Cubangirly13', 'longitude': -74.013283504, 'user': 'cubangirly13'}]
 
@@ -34,7 +38,7 @@ def write_to_csv(instagram_results, tweet_results):
     ]
 
     # opens csv file to write headers
-    with open(config_settings['FILE_PATH'], 'wb', buffering=0) as newCsvFile:
+    with open(EXPORT_FOLDER + '/data-export.csv', 'wb', buffering=0) as newCsvFile:
         dataForCsv = csv.writer(newCsvFile, delimiter=',', quoting=csv.QUOTE_ALL)
 
         dataForCsv.writerow(csv_headers)
