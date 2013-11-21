@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, jsonify, render_template, request
 from flask.ext.assets import Environment, Bundle
-import webassets
+from config import config_settings
 from search_functions import combine_and_convert_datetime
 from search_instagram import search_instagram
 from search_twitter import search_twitter
+import webassets
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -24,7 +25,7 @@ js = Bundle(
     'scripts/libs/bootstrap.min.js',
     'scripts/libs/jquery.geocomplete.min-1.4.js',
     'scripts/app.js',
-    #filters='rjsmin',
+    filters='rjsmin',
     output='scripts/libs.js'
 )
 assets.register('js_libs', js)
@@ -102,4 +103,4 @@ def search_query():
     )
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=config_settings['DEBUG'])
