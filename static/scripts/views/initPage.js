@@ -74,8 +74,13 @@
             var yesterday = todayDate.getDate()-1;
             var startDateValue = year + '-' + month + '-' + yesterday;
             var endDateValue = year + '-' + month + '-' + today;
+            var hours = todayDate.getHours();
+            var minutes = todayDate.getMinutes();
+            var formattedTime = hours + ':' + minutes;
             $("input[id='startDate']").attr('value', startDateValue);
+            $("input[id='startTime']").attr('value', formattedTime);
             $("input[id='endDate']").attr('value', endDateValue);
+            $("input[id='endTime']").attr('value', formattedTime);
         },
 
         render: function(){
