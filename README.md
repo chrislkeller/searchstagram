@@ -22,6 +22,6 @@ Riffing of the [QIS tool](https://github.com/propublica/qis) from [Al Shaw](http
             'INSTAGRAM_CLIENT_SECRET': '#',
         }
 
-* Change into the searchstagram directory, run ```python app.py``` and visit ```http://127.0.0.1:5000/``` in your browswer.
+* Change into the searchstagram directory, run ```python __init__.py``` and visit ```http://127.0.0.1:5000/``` in your browswer.
 
 * Type in an address to search, or use your current location.
