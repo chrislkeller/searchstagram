@@ -100,11 +100,15 @@
         listView: function(data){
             $('#data-results').removeClass('hidden');
             $('#content-map-canvas').addClass('hidden');
+            $('a#map-view').removeClass('active');
+            $('a#list-view').addClass('active');
         },
 
         mapView: function(data){
             $('#data-results').addClass('hidden');
             $('#content-map-canvas').removeClass('hidden');
+            $('a#map-view').addClass('active');
+            $('a#list-view').removeClass('active');
         },
 
         render: function(){
