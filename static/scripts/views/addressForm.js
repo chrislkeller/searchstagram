@@ -15,6 +15,7 @@
 
         events: {
             'click button#submit': 'submitData',
+            'keyup :input': 'enterToSubmitForm'
         },
 
         submitData: function(){
@@ -22,6 +23,19 @@
             $('#data-results').empty();
             var processData = new App.Views.ProcessData();
             processData.queryAPIForData();
+        },
+
+        enterToSubmitForm: function(e){
+            var latitudeSearch = $('input[id="latitudeSearch"]').val();
+            var longitudeSearch = $('input[id="longitudeSearch"]').val();
+
+    		if(e.keyCode != 13) {
+    		    return false;
+    		} else if (e.keyCode === 13 && latitudeSearch === '' && longitudeSearch === '') {
+    		    return false;
+    		} else {
+                this.submitData();
+    		}
         },
 
         render: function(){
