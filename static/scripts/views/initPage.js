@@ -67,19 +67,13 @@
         */
 
         completeDateValues: function(){
-            var todayDate = new Date();
-            var year = todayDate.getFullYear();
-            var month = todayDate.getMonth()+1;
-            var today = todayDate.getDate();
-            var yesterday = todayDate.getDate()-1;
-            var startDateValue = year + '-' + month + '-' + yesterday;
-            var endDateValue = year + '-' + month + '-' + today;
-            var hours = todayDate.getHours();
-            var minutes = todayDate.getMinutes();
-            var formattedTime = hours + ':' + minutes;
-            $("input[id='startDate']").attr('value', startDateValue);
+            var today = new Date();
+            var todayDate = moment(today).format('YYYY-MM-DD');
+            var yesterdayDate = moment(todayDate).subtract('days', 1).format('YYYY-MM-DD');
+            var formattedTime = moment(today).format('hh:mm');
+            $("#startDate").val(yesterdayDate);
             $("input[id='startTime']").attr('value', formattedTime);
-            $("input[id='endDate']").attr('value', endDateValue);
+            $("#endDate").val(todayDate);
             $("input[id='endTime']").attr('value', formattedTime);
         },
 
