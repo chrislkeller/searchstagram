@@ -25,3 +25,7 @@ Riffing of the [QIS tool](https://github.com/propublica/qis) from [Al Shaw](http
 * Change into the searchstagram directory, run ```python __init__.py``` and visit ```http://127.0.0.1:5000/``` in your browswer.
 
 * Type in an address to search, or use your current location.
+
+**Articles written using Searchstagram**
+
+* [What does LA look like at 10 pm?](http://www.scpr.org/news/2014/01/08/41410/what-does-la-look-like-at-10-pm-photos/)
