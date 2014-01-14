@@ -1,3 +1,3 @@
-    App.Models.Map = Backbone.Model.extend({
+App.Models.Map = Backbone.Model.extend({
 
-    });
+});
